@@ -1,0 +1,1700 @@
+
+CREATE TABLE AMBIENTE
+(
+	codAmb               CHAR(18) NOT NULL ,
+	superficie           CHAR(18) NULL ,
+	descripcion          CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKAMBIENTE ON AMBIENTE
+(codAmb   ASC);
+
+
+
+ALTER TABLE AMBIENTE
+	ADD CONSTRAINT  XPKAMBIENTE PRIMARY KEY (codAmb);
+
+
+
+CREATE TABLE ATENDIDO
+(
+	CI                   CHAR(18) NOT NULL ,
+	codSer               CHAR(18) NOT NULL ,
+	fecha                CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKATENDIDO ON ATENDIDO
+(CI   ASC,codSer   ASC);
+
+
+
+ALTER TABLE ATENDIDO
+	ADD CONSTRAINT  XPKATENDIDO PRIMARY KEY (CI,codSer);
+
+
+
+CREATE TABLE BIEN_INMUEBLE
+(
+	nroFolioReal         CHAR(18) NOT NULL ,
+	superficie           CHAR(18) NULL ,
+	ubicacion            CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKBIEN_INMUEBLE ON BIEN_INMUEBLE
+(nroFolioReal   ASC);
+
+
+
+ALTER TABLE BIEN_INMUEBLE
+	ADD CONSTRAINT  XPKBIEN_INMUEBLE PRIMARY KEY (nroFolioReal);
+
+
+
+CREATE TABLE CARGO
+(
+	codCargo             CHAR(18) NOT NULL ,
+	nombre               CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKCARGO ON CARGO
+(codCargo   ASC);
+
+
+
+ALTER TABLE CARGO
+	ADD CONSTRAINT  XPKCARGO PRIMARY KEY (codCargo);
+
+
+
+CREATE TABLE DETALLE_SERVICIO
+(
+	precio               CHAR(18) NULL ,
+	codAmb               CHAR(18) NOT NULL ,
+	codSer               CHAR(18) NOT NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKDETALLE_SERVICIO ON DETALLE_SERVICIO
+(codAmb   ASC,codSer   ASC);
+
+
+
+ALTER TABLE DETALLE_SERVICIO
+	ADD CONSTRAINT  XPKDETALLE_SERVICIO PRIMARY KEY (codAmb,codSer);
+
+
+
+CREATE TABLE PAGA
+(
+	NIT                  CHAR(18) NOT NULL ,
+	codSer               CHAR(18) NOT NULL ,
+	fecha                CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKPAGA ON PAGA
+(NIT   ASC,codSer   ASC);
+
+
+
+ALTER TABLE PAGA
+	ADD CONSTRAINT  XPKPAGA PRIMARY KEY (NIT,codSer);
+
+
+
+CREATE TABLE PERSONA
+(
+	NIT                  CHAR(18) NOT NULL ,
+	direccion            CHAR(18) NULL ,
+	correo_e             CHAR(18) NULL ,
+	CI                   CHAR(18) NOT NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKPERSONA ON PERSONA
+(NIT   ASC);
+
+
+
+ALTER TABLE PERSONA
+	ADD CONSTRAINT  XPKPERSONA PRIMARY KEY (NIT);
+
+
+
+CREATE TABLE PERSONA_JUR
+(
+	razonSocial          CHAR(18) NULL ,
+	NIT                  CHAR(18) NOT NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKPERSONA_JUR ON PERSONA_JUR
+(NIT   ASC);
+
+
+
+ALTER TABLE PERSONA_JUR
+	ADD CONSTRAINT  XPKPERSONA_JUR PRIMARY KEY (NIT);
+
+
+
+CREATE TABLE PERSONA_NAT
+(
+	nombre               CHAR(18) NULL ,
+	paterno              CHAR(18) NULL ,
+	materno              CHAR(18) NULL ,
+	NIT                  CHAR(18) NOT NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKPERSONA_NAT ON PERSONA_NAT
+(NIT   ASC);
+
+
+
+ALTER TABLE PERSONA_NAT
+	ADD CONSTRAINT  XPKPERSONA_NAT PRIMARY KEY (NIT);
+
+
+
+CREATE TABLE PERSONAL
+(
+	CI                   CHAR(18) NOT NULL ,
+	nombre               CHAR(18) NULL ,
+	paterno              CHAR(18) NULL ,
+	materno              CHAR(18) NULL ,
+	nroFolioReal         CHAR(18) NOT NULL ,
+	codCargo             CHAR(18) NOT NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKPERSONAL ON PERSONAL
+(CI   ASC);
+
+
+
+ALTER TABLE PERSONAL
+	ADD CONSTRAINT  XPKPERSONAL PRIMARY KEY (CI);
+
+
+
+CREATE TABLE SERVICIO
+(
+	codSer               CHAR(18) NOT NULL ,
+	nombre               CHAR(18) NULL ,
+	precio               CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKSERVICIO ON SERVICIO
+(codSer   ASC);
+
+
+
+ALTER TABLE SERVICIO
+	ADD CONSTRAINT  XPKSERVICIO PRIMARY KEY (codSer);
+
+
+
+CREATE TABLE SOLICITA
+(
+	NIT                  CHAR(18) NOT NULL ,
+	codSer               CHAR(18) NOT NULL ,
+	direccion            CHAR(18) NULL ,
+	fecha                CHAR(18) NULL 
+);
+
+
+
+CREATE UNIQUE INDEX XPKSOLICITA ON SOLICITA
+(NIT   ASC,codSer   ASC);
+
+
+
+ALTER TABLE SOLICITA
+	ADD CONSTRAINT  XPKSOLICITA PRIMARY KEY (NIT,codSer);
+
+
+
+ALTER TABLE ATENDIDO
+	ADD (CONSTRAINT R_25 FOREIGN KEY (CI) REFERENCES PERSONAL (CI));
+
+
+
+ALTER TABLE ATENDIDO
+	ADD (CONSTRAINT R_27 FOREIGN KEY (codSer) REFERENCES SERVICIO (codSer));
+
+
+
+ALTER TABLE DETALLE_SERVICIO
+	ADD (CONSTRAINT R_1 FOREIGN KEY (codAmb) REFERENCES AMBIENTE (codAmb));
+
+
+
+ALTER TABLE DETALLE_SERVICIO
+	ADD (CONSTRAINT R_4 FOREIGN KEY (codSer) REFERENCES SERVICIO (codSer));
+
+
+
+ALTER TABLE PAGA
+	ADD (CONSTRAINT R_12 FOREIGN KEY (NIT) REFERENCES PERSONA (NIT));
+
+
+
+ALTER TABLE PAGA
+	ADD (CONSTRAINT R_24 FOREIGN KEY (codSer) REFERENCES SERVICIO (codSer));
+
+
+
+ALTER TABLE PERSONA
+	ADD (CONSTRAINT R_8 FOREIGN KEY (CI) REFERENCES PERSONAL (CI));
+
+
+
+ALTER TABLE PERSONA_JUR
+	ADD (FOREIGN KEY (NIT) REFERENCES PERSONA(NIT) ON DELETE CASCADE);
+
+
+
+ALTER TABLE PERSONA_NAT
+	ADD (FOREIGN KEY (NIT) REFERENCES PERSONA(NIT) ON DELETE CASCADE);
+
+
+
+ALTER TABLE PERSONAL
+	ADD (CONSTRAINT R_5 FOREIGN KEY (nroFolioReal) REFERENCES BIEN_INMUEBLE (nroFolioReal));
+
+
+
+ALTER TABLE PERSONAL
+	ADD (CONSTRAINT R_7 FOREIGN KEY (codCargo) REFERENCES CARGO (codCargo));
+
+
+
+ALTER TABLE SOLICITA
+	ADD (CONSTRAINT R_13 FOREIGN KEY (NIT) REFERENCES PERSONA (NIT));
+
+
+
+ALTER TABLE SOLICITA
+	ADD (CONSTRAINT R_22 FOREIGN KEY (codSer) REFERENCES SERVICIO (codSer));
+
+
+
+CREATE  TRIGGER  tD_AMBIENTE AFTER DELETE ON AMBIENTE for each row
+-- ERwin Builtin Trigger
+-- DELETE trigger on AMBIENTE 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* AMBIENTE  DETALLE_SERVICIO on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="0000e55f", PARENT_OWNER="", PARENT_TABLE="AMBIENTE"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_1", FK_COLUMNS="codAmb" */
+    SELECT count(*) INTO NUMROWS
+      FROM DETALLE_SERVICIO
+      WHERE
+        /*  %JoinFKPK(DETALLE_SERVICIO,:%Old," = "," AND") */
+        DETALLE_SERVICIO.codAmb = :old.codAmb;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete AMBIENTE because DETALLE_SERVICIO exists.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_AMBIENTE AFTER UPDATE ON AMBIENTE for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on AMBIENTE 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* AMBIENTE  DETALLE_SERVICIO on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="000115b1", PARENT_OWNER="", PARENT_TABLE="AMBIENTE"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_1", FK_COLUMNS="codAmb" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.codAmb <> :new.codAmb
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM DETALLE_SERVICIO
+      WHERE
+        /*  %JoinFKPK(DETALLE_SERVICIO,:%Old," = "," AND") */
+        DETALLE_SERVICIO.codAmb = :old.codAmb;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update AMBIENTE because DETALLE_SERVICIO exists.'
+      );
+    END IF;
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_ATENDIDO BEFORE INSERT ON ATENDIDO for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on ATENDIDO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONAL  ATENDIDO on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0001dec1", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_25", FK_COLUMNS="CI" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONAL
+      WHERE
+        /* %JoinFKPK(:%New,PERSONAL," = "," AND") */
+        :new.CI = PERSONAL.CI;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert ATENDIDO because PERSONAL does not exist.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  ATENDIDO on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_27", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM SERVICIO
+      WHERE
+        /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+        :new.codSer = SERVICIO.codSer;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert ATENDIDO because SERVICIO does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_ATENDIDO AFTER UPDATE ON ATENDIDO for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on ATENDIDO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONAL  ATENDIDO on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0001dde1", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_25", FK_COLUMNS="CI" */
+  SELECT count(*) INTO NUMROWS
+    FROM PERSONAL
+    WHERE
+      /* %JoinFKPK(:%New,PERSONAL," = "," AND") */
+      :new.CI = PERSONAL.CI;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update ATENDIDO because PERSONAL does not exist.'
+    );
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  ATENDIDO on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_27", FK_COLUMNS="codSer" */
+  SELECT count(*) INTO NUMROWS
+    FROM SERVICIO
+    WHERE
+      /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+      :new.codSer = SERVICIO.codSer;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update ATENDIDO because SERVICIO does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER  tD_BIEN_INMUEBLE AFTER DELETE ON BIEN_INMUEBLE for each row
+-- ERwin Builtin Trigger
+-- DELETE trigger on BIEN_INMUEBLE 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* BIEN_INMUEBLE  PERSONAL on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="0000e7d6", PARENT_OWNER="", PARENT_TABLE="BIEN_INMUEBLE"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_5", FK_COLUMNS="nroFolioReal" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONAL
+      WHERE
+        /*  %JoinFKPK(PERSONAL,:%Old," = "," AND") */
+        PERSONAL.nroFolioReal = :old.nroFolioReal;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete BIEN_INMUEBLE because PERSONAL exists.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_BIEN_INMUEBLE AFTER UPDATE ON BIEN_INMUEBLE for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on BIEN_INMUEBLE 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* BIEN_INMUEBLE  PERSONAL on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="000105fc", PARENT_OWNER="", PARENT_TABLE="BIEN_INMUEBLE"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_5", FK_COLUMNS="nroFolioReal" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.nroFolioReal <> :new.nroFolioReal
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONAL
+      WHERE
+        /*  %JoinFKPK(PERSONAL,:%Old," = "," AND") */
+        PERSONAL.nroFolioReal = :old.nroFolioReal;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update BIEN_INMUEBLE because PERSONAL exists.'
+      );
+    END IF;
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER  tD_CARGO AFTER DELETE ON CARGO for each row
+-- ERwin Builtin Trigger
+-- DELETE trigger on CARGO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* CARGO  PERSONAL on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="0000dbdc", PARENT_OWNER="", PARENT_TABLE="CARGO"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_7", FK_COLUMNS="codCargo" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONAL
+      WHERE
+        /*  %JoinFKPK(PERSONAL,:%Old," = "," AND") */
+        PERSONAL.codCargo = :old.codCargo;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete CARGO because PERSONAL exists.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_CARGO AFTER UPDATE ON CARGO for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on CARGO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* CARGO  PERSONAL on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0001050d", PARENT_OWNER="", PARENT_TABLE="CARGO"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_7", FK_COLUMNS="codCargo" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.codCargo <> :new.codCargo
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONAL
+      WHERE
+        /*  %JoinFKPK(PERSONAL,:%Old," = "," AND") */
+        PERSONAL.codCargo = :old.codCargo;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update CARGO because PERSONAL exists.'
+      );
+    END IF;
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_DETALLE_SERVICIO BEFORE INSERT ON DETALLE_SERVICIO for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on DETALLE_SERVICIO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* AMBIENTE  DETALLE_SERVICIO on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0001f2fc", PARENT_OWNER="", PARENT_TABLE="AMBIENTE"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_1", FK_COLUMNS="codAmb" */
+    SELECT count(*) INTO NUMROWS
+      FROM AMBIENTE
+      WHERE
+        /* %JoinFKPK(:%New,AMBIENTE," = "," AND") */
+        :new.codAmb = AMBIENTE.codAmb;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert DETALLE_SERVICIO because AMBIENTE does not exist.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  DETALLE_SERVICIO on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_4", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM SERVICIO
+      WHERE
+        /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+        :new.codSer = SERVICIO.codSer;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert DETALLE_SERVICIO because SERVICIO does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_DETALLE_SERVICIO AFTER UPDATE ON DETALLE_SERVICIO for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on DETALLE_SERVICIO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* AMBIENTE  DETALLE_SERVICIO on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0001f6e7", PARENT_OWNER="", PARENT_TABLE="AMBIENTE"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_1", FK_COLUMNS="codAmb" */
+  SELECT count(*) INTO NUMROWS
+    FROM AMBIENTE
+    WHERE
+      /* %JoinFKPK(:%New,AMBIENTE," = "," AND") */
+      :new.codAmb = AMBIENTE.codAmb;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update DETALLE_SERVICIO because AMBIENTE does not exist.'
+    );
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  DETALLE_SERVICIO on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_4", FK_COLUMNS="codSer" */
+  SELECT count(*) INTO NUMROWS
+    FROM SERVICIO
+    WHERE
+      /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+      :new.codSer = SERVICIO.codSer;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update DETALLE_SERVICIO because SERVICIO does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_PAGA BEFORE INSERT ON PAGA for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on PAGA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONA  PAGA on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0001dcd9", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="NIT" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONA
+      WHERE
+        /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+        :new.NIT = PERSONA.NIT;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PAGA because PERSONA does not exist.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  PAGA on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_24", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM SERVICIO
+      WHERE
+        /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+        :new.codSer = SERVICIO.codSer;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PAGA because SERVICIO does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_PAGA AFTER UPDATE ON PAGA for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on PAGA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONA  PAGA on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0001c9bc", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="NIT" */
+  SELECT count(*) INTO NUMROWS
+    FROM PERSONA
+    WHERE
+      /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+      :new.NIT = PERSONA.NIT;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PAGA because PERSONA does not exist.'
+    );
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  PAGA on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_24", FK_COLUMNS="codSer" */
+  SELECT count(*) INTO NUMROWS
+    FROM SERVICIO
+    WHERE
+      /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+      :new.codSer = SERVICIO.codSer;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PAGA because SERVICIO does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_PERSONA BEFORE INSERT ON PERSONA for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on PERSONA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONAL  PERSONA on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0000e2eb", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="CI" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONAL
+      WHERE
+        /* %JoinFKPK(:%New,PERSONAL," = "," AND") */
+        :new.CI = PERSONAL.CI;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PERSONA because PERSONAL does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER  tD_PERSONA AFTER DELETE ON PERSONA for each row
+-- ERwin Builtin Trigger
+-- DELETE trigger on PERSONA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONA  PERSONA_NAT on parent delete cascade */
+    /* ERWIN_RELATION:CHECKSUM="0002e2b4", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_NAT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+    DELETE FROM PERSONA_NAT
+      WHERE
+        /*  %JoinFKPK(PERSONA_NAT,:%Old," = "," AND") */
+        PERSONA_NAT.NIT = :old.NIT;
+
+    /* ERwin Builtin Trigger */
+    /* PERSONA  PERSONA_JUR on parent delete cascade */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_JUR"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+    DELETE FROM PERSONA_JUR
+      WHERE
+        /*  %JoinFKPK(PERSONA_JUR,:%Old," = "," AND") */
+        PERSONA_JUR.NIT = :old.NIT;
+
+    /* ERwin Builtin Trigger */
+    /* PERSONA  SOLICITA on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="NIT" */
+    SELECT count(*) INTO NUMROWS
+      FROM SOLICITA
+      WHERE
+        /*  %JoinFKPK(SOLICITA,:%Old," = "," AND") */
+        SOLICITA.NIT = :old.NIT;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete PERSONA because SOLICITA exists.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* PERSONA  PAGA on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="NIT" */
+    SELECT count(*) INTO NUMROWS
+      FROM PAGA
+      WHERE
+        /*  %JoinFKPK(PAGA,:%Old," = "," AND") */
+        PAGA.NIT = :old.NIT;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete PERSONA because PAGA exists.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_PERSONA AFTER UPDATE ON PERSONA for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on PERSONA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONA  PERSONA_NAT on parent update cascade */
+  /* ERWIN_RELATION:CHECKSUM="00049701", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_NAT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.NIT <> :new.NIT
+  THEN
+    UPDATE PERSONA_NAT
+      SET
+        /*  %JoinFKPK(PERSONA_NAT,:%New," = ",",") */
+        PERSONA_NAT.NIT = :new.NIT
+      WHERE
+        /*  %JoinFKPK(PERSONA_NAT,:%Old," = "," AND") */
+        PERSONA_NAT.NIT = :old.NIT;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* PERSONA  PERSONA_JUR on parent update cascade */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_JUR"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.NIT <> :new.NIT
+  THEN
+    UPDATE PERSONA_JUR
+      SET
+        /*  %JoinFKPK(PERSONA_JUR,:%New," = ",",") */
+        PERSONA_JUR.NIT = :new.NIT
+      WHERE
+        /*  %JoinFKPK(PERSONA_JUR,:%Old," = "," AND") */
+        PERSONA_JUR.NIT = :old.NIT;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* PERSONA  SOLICITA on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="NIT" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.NIT <> :new.NIT
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM SOLICITA
+      WHERE
+        /*  %JoinFKPK(SOLICITA,:%Old," = "," AND") */
+        SOLICITA.NIT = :old.NIT;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update PERSONA because SOLICITA exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* PERSONA  PAGA on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_12", FK_COLUMNS="NIT" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.NIT <> :new.NIT
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM PAGA
+      WHERE
+        /*  %JoinFKPK(PAGA,:%Old," = "," AND") */
+        PAGA.NIT = :old.NIT;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update PERSONA because PAGA exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* PERSONAL  PERSONA on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="CI" */
+  SELECT count(*) INTO NUMROWS
+    FROM PERSONAL
+    WHERE
+      /* %JoinFKPK(:%New,PERSONAL," = "," AND") */
+      :new.CI = PERSONAL.CI;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PERSONA because PERSONAL does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_PERSONA_JUR BEFORE INSERT ON PERSONA_JUR for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on PERSONA_JUR 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONA  PERSONA_JUR on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0000e74d", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_JUR"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONA
+      WHERE
+        /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+        :new.NIT = PERSONA.NIT;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PERSONA_JUR because PERSONA does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_PERSONA_JUR AFTER UPDATE ON PERSONA_JUR for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on PERSONA_JUR 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONA  PERSONA_JUR on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0000e681", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_JUR"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+  SELECT count(*) INTO NUMROWS
+    FROM PERSONA
+    WHERE
+      /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+      :new.NIT = PERSONA.NIT;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PERSONA_JUR because PERSONA does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_PERSONA_NAT BEFORE INSERT ON PERSONA_NAT for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on PERSONA_NAT 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONA  PERSONA_NAT on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0000db57", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_NAT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONA
+      WHERE
+        /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+        :new.NIT = PERSONA.NIT;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PERSONA_NAT because PERSONA does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_PERSONA_NAT AFTER UPDATE ON PERSONA_NAT for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on PERSONA_NAT 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONA  PERSONA_NAT on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0000daab", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA_NAT"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="is_a", FK_COLUMNS="NIT" */
+  SELECT count(*) INTO NUMROWS
+    FROM PERSONA
+    WHERE
+      /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+      :new.NIT = PERSONA.NIT;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PERSONA_NAT because PERSONA does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_PERSONAL BEFORE INSERT ON PERSONAL for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on PERSONAL 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* BIEN_INMUEBLE  PERSONAL on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0001f63c", PARENT_OWNER="", PARENT_TABLE="BIEN_INMUEBLE"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_5", FK_COLUMNS="nroFolioReal" */
+    SELECT count(*) INTO NUMROWS
+      FROM BIEN_INMUEBLE
+      WHERE
+        /* %JoinFKPK(:%New,BIEN_INMUEBLE," = "," AND") */
+        :new.nroFolioReal = BIEN_INMUEBLE.nroFolioReal;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PERSONAL because BIEN_INMUEBLE does not exist.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* CARGO  PERSONAL on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="CARGO"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_7", FK_COLUMNS="codCargo" */
+    SELECT count(*) INTO NUMROWS
+      FROM CARGO
+      WHERE
+        /* %JoinFKPK(:%New,CARGO," = "," AND") */
+        :new.codCargo = CARGO.codCargo;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert PERSONAL because CARGO does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER  tD_PERSONAL AFTER DELETE ON PERSONAL for each row
+-- ERwin Builtin Trigger
+-- DELETE trigger on PERSONAL 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONAL  PERSONA on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="0001a978", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="CI" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONA
+      WHERE
+        /*  %JoinFKPK(PERSONA,:%Old," = "," AND") */
+        PERSONA.CI = :old.CI;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete PERSONAL because PERSONA exists.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* PERSONAL  ATENDIDO on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_25", FK_COLUMNS="CI" */
+    SELECT count(*) INTO NUMROWS
+      FROM ATENDIDO
+      WHERE
+        /*  %JoinFKPK(ATENDIDO,:%Old," = "," AND") */
+        ATENDIDO.CI = :old.CI;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete PERSONAL because ATENDIDO exists.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_PERSONAL AFTER UPDATE ON PERSONAL for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on PERSONAL 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONAL  PERSONA on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0003ee4a", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="PERSONA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_8", FK_COLUMNS="CI" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.CI <> :new.CI
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONA
+      WHERE
+        /*  %JoinFKPK(PERSONA,:%Old," = "," AND") */
+        PERSONA.CI = :old.CI;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update PERSONAL because PERSONA exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* PERSONAL  ATENDIDO on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="PERSONAL"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_25", FK_COLUMNS="CI" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.CI <> :new.CI
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM ATENDIDO
+      WHERE
+        /*  %JoinFKPK(ATENDIDO,:%Old," = "," AND") */
+        ATENDIDO.CI = :old.CI;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update PERSONAL because ATENDIDO exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* BIEN_INMUEBLE  PERSONAL on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="BIEN_INMUEBLE"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_5", FK_COLUMNS="nroFolioReal" */
+  SELECT count(*) INTO NUMROWS
+    FROM BIEN_INMUEBLE
+    WHERE
+      /* %JoinFKPK(:%New,BIEN_INMUEBLE," = "," AND") */
+      :new.nroFolioReal = BIEN_INMUEBLE.nroFolioReal;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PERSONAL because BIEN_INMUEBLE does not exist.'
+    );
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* CARGO  PERSONAL on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="CARGO"
+    CHILD_OWNER="", CHILD_TABLE="PERSONAL"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_7", FK_COLUMNS="codCargo" */
+  SELECT count(*) INTO NUMROWS
+    FROM CARGO
+    WHERE
+      /* %JoinFKPK(:%New,CARGO," = "," AND") */
+      :new.codCargo = CARGO.codCargo;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update PERSONAL because CARGO does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER  tD_SERVICIO AFTER DELETE ON SERVICIO for each row
+-- ERwin Builtin Trigger
+-- DELETE trigger on SERVICIO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  DETALLE_SERVICIO on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00039973", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_4", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM DETALLE_SERVICIO
+      WHERE
+        /*  %JoinFKPK(DETALLE_SERVICIO,:%Old," = "," AND") */
+        DETALLE_SERVICIO.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete SERVICIO because DETALLE_SERVICIO exists.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  SOLICITA on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_22", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM SOLICITA
+      WHERE
+        /*  %JoinFKPK(SOLICITA,:%Old," = "," AND") */
+        SOLICITA.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete SERVICIO because SOLICITA exists.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  PAGA on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_24", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM PAGA
+      WHERE
+        /*  %JoinFKPK(PAGA,:%Old," = "," AND") */
+        PAGA.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete SERVICIO because PAGA exists.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  ATENDIDO on parent delete restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_27", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM ATENDIDO
+      WHERE
+        /*  %JoinFKPK(ATENDIDO,:%Old," = "," AND") */
+        ATENDIDO.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN
+      raise_application_error(
+        -20001,
+        'Cannot delete SERVICIO because ATENDIDO exists.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_SERVICIO AFTER UPDATE ON SERVICIO for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on SERVICIO 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  DETALLE_SERVICIO on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00041cf9", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="DETALLE_SERVICIO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_4", FK_COLUMNS="codSer" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.codSer <> :new.codSer
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM DETALLE_SERVICIO
+      WHERE
+        /*  %JoinFKPK(DETALLE_SERVICIO,:%Old," = "," AND") */
+        DETALLE_SERVICIO.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update SERVICIO because DETALLE_SERVICIO exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  SOLICITA on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_22", FK_COLUMNS="codSer" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.codSer <> :new.codSer
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM SOLICITA
+      WHERE
+        /*  %JoinFKPK(SOLICITA,:%Old," = "," AND") */
+        SOLICITA.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update SERVICIO because SOLICITA exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  PAGA on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="PAGA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_24", FK_COLUMNS="codSer" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.codSer <> :new.codSer
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM PAGA
+      WHERE
+        /*  %JoinFKPK(PAGA,:%Old," = "," AND") */
+        PAGA.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update SERVICIO because PAGA exists.'
+      );
+    END IF;
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  ATENDIDO on parent update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="ATENDIDO"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_27", FK_COLUMNS="codSer" */
+  IF
+    /* %JoinPKPK(:%Old,:%New," <> "," OR ") */
+    :old.codSer <> :new.codSer
+  THEN
+    SELECT count(*) INTO NUMROWS
+      FROM ATENDIDO
+      WHERE
+        /*  %JoinFKPK(ATENDIDO,:%Old," = "," AND") */
+        ATENDIDO.codSer = :old.codSer;
+    IF (NUMROWS > 0)
+    THEN 
+      raise_application_error(
+        -20005,
+        'Cannot update SERVICIO because ATENDIDO exists.'
+      );
+    END IF;
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+
+CREATE  TRIGGER tI_SOLICITA BEFORE INSERT ON SOLICITA for each row
+-- ERwin Builtin Trigger
+-- INSERT trigger on SOLICITA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+    /* ERwin Builtin Trigger */
+    /* PERSONA  SOLICITA on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="0001e328", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="NIT" */
+    SELECT count(*) INTO NUMROWS
+      FROM PERSONA
+      WHERE
+        /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+        :new.NIT = PERSONA.NIT;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert SOLICITA because PERSONA does not exist.'
+      );
+    END IF;
+
+    /* ERwin Builtin Trigger */
+    /* SERVICIO  SOLICITA on child insert restrict */
+    /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_22", FK_COLUMNS="codSer" */
+    SELECT count(*) INTO NUMROWS
+      FROM SERVICIO
+      WHERE
+        /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+        :new.codSer = SERVICIO.codSer;
+    IF (
+      /* %NotnullFK(:%New," IS NOT NULL AND") */
+      
+      NUMROWS = 0
+    )
+    THEN
+      raise_application_error(
+        -20002,
+        'Cannot insert SOLICITA because SERVICIO does not exist.'
+      );
+    END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
+CREATE  TRIGGER tU_SOLICITA AFTER UPDATE ON SOLICITA for each row
+-- ERwin Builtin Trigger
+-- UPDATE trigger on SOLICITA 
+DECLARE NUMROWS INTEGER;
+BEGIN
+  /* ERwin Builtin Trigger */
+  /* PERSONA  SOLICITA on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="0001d8ee", PARENT_OWNER="", PARENT_TABLE="PERSONA"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_13", FK_COLUMNS="NIT" */
+  SELECT count(*) INTO NUMROWS
+    FROM PERSONA
+    WHERE
+      /* %JoinFKPK(:%New,PERSONA," = "," AND") */
+      :new.NIT = PERSONA.NIT;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update SOLICITA because PERSONA does not exist.'
+    );
+  END IF;
+
+  /* ERwin Builtin Trigger */
+  /* SERVICIO  SOLICITA on child update restrict */
+  /* ERWIN_RELATION:CHECKSUM="00000000", PARENT_OWNER="", PARENT_TABLE="SERVICIO"
+    CHILD_OWNER="", CHILD_TABLE="SOLICITA"
+    P2C_VERB_PHRASE="", C2P_VERB_PHRASE="", 
+    FK_CONSTRAINT="R_22", FK_COLUMNS="codSer" */
+  SELECT count(*) INTO NUMROWS
+    FROM SERVICIO
+    WHERE
+      /* %JoinFKPK(:%New,SERVICIO," = "," AND") */
+      :new.codSer = SERVICIO.codSer;
+  IF (
+    /* %NotnullFK(:%New," IS NOT NULL AND") */
+    
+    NUMROWS = 0
+  )
+  THEN
+    raise_application_error(
+      -20007,
+      'Cannot update SOLICITA because SERVICIO does not exist.'
+    );
+  END IF;
+
+
+-- ERwin Builtin Trigger
+END;
+/
+
